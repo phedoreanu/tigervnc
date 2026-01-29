@@ -48,3 +48,11 @@ add_executable(emulatemb emulatemb.cxx ../../vncviewer/EmulateMB.cxx)
 target_include_directories(emulatemb SYSTEM PUBLIC ${Intl_INCLUDE_DIR})
 target_link_libraries(emulatemb core ${Intl_LIBRARIES} GTest::gtest_main)
 gtest_discover_tests(emulatemb)
+
+# FLTK compatibility tests - only built if viewer is enabled
+if(BUILD_VIEWER)
+  add_executable(fltkcompat fltk.cxx)
+  target_include_directories(fltkcompat SYSTEM PUBLIC ${FLTK_INCLUDE_DIR})
+  target_link_libraries(fltkcompat ${FLTK_LIBRARIES} GTest::gtest_main)
+  gtest_discover_tests(fltkcompat)
+endif()
