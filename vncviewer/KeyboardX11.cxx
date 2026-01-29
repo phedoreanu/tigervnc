@@ -26,7 +26,7 @@
 #include <stdexcept>
 
 #include <X11/XKBlib.h>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include <core/LogWriter.h>
 
@@ -48,6 +48,14 @@ KeyboardX11::KeyboardX11(KeyboardHandler* handler_)
 {
   XkbDescPtr xkb;
   Status status;
+
+#ifdef TIGERVNC_HAVE_FLTK_WAYLAND_DETECTION
+  // FLTK 1.4 with Wayland support - check if we're actually running X11
+  if (!fl_x11_display()) {
+    vlog.error("KeyboardX11 requires X11 display, but Wayland is active");
+    throw std::runtime_error("X11 keyboard not available on Wayland");
+  }
+#endif
 
   xkb = XkbGetMap(fl_display, 0, XkbUseCoreKbd);
   if (!xkb)

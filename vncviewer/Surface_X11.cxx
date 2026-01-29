@@ -26,7 +26,7 @@
 #include <stdexcept>
 
 #include <FL/Fl_RGB_Image.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include "Surface.h"
 

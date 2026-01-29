@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 #include <FL/Fl.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include <core/LogWriter.h>
 

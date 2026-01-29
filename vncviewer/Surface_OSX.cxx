@@ -28,7 +28,7 @@
 
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Window.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include "cocoa.h"
 #include "Surface.h"

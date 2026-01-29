@@ -24,7 +24,7 @@
 #include <dlfcn.h>
 
 #include <FL/Fl_Window.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #import <Cocoa/Cocoa.h>
 #import <ApplicationServices/ApplicationServices.h>

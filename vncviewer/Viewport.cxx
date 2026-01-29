@@ -63,7 +63,7 @@
 
 #include <FL/Fl_Menu.H>
 #include <FL/Fl_Menu_Button.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #if defined(WIN32)
 #include "KeyboardWin32.h"

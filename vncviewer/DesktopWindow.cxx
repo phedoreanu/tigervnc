@@ -52,7 +52,7 @@
 #include <FL/Fl_Image_Surface.H>
 #include <FL/Fl_Scrollbar.H>
 #include <FL/fl_draw.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #ifdef WIN32
 #include "win32.h"
@@ -490,10 +490,15 @@ void DesktopWindow::draw()
 #if !defined(__APPLE__)
 
   // Adjust offscreen surface dimensions
+  // For HighDPI displays, use actual pixel dimensions to avoid blurriness.
+  // FLTK 1.4 automatically scales between logical and pixel coordinates.
+  int pixel_w = tigervnc::pixel_width(this);
+  int pixel_h = tigervnc::pixel_height(this);
+  
   if ((offscreen == nullptr) ||
-      (offscreen->width() != w()) || (offscreen->height() != h())) {
+      (offscreen->width() != pixel_w) || (offscreen->height() != pixel_h)) {
     delete offscreen;
-    offscreen = new Surface(w(), h());
+    offscreen = new Surface(pixel_w, pixel_h);
   }
 
 #endif

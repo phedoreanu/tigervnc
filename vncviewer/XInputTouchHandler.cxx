@@ -28,7 +28,7 @@
 #include <X11/extensions/XI2.h>
 #include <X11/XKBlib.h>
 
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include <core/LogWriter.h>
 
@@ -49,6 +49,14 @@ XInputTouchHandler::XInputTouchHandler(Window wnd_)
 {
   XIEventMask eventmask;
   unsigned char flags[XIMaskLen(XI_LASTEVENT)] = { 0 };
+
+#ifdef TIGERVNC_HAVE_FLTK_WAYLAND_DETECTION
+  // FLTK 1.4 with Wayland support - check if we're actually running X11
+  if (!fl_x11_display()) {
+    vlog.error("XInputTouchHandler requires X11, but Wayland is active");
+    throw std::runtime_error("XInput2 touch not available on Wayland");
+  }
+#endif
 
   // Event delivery is broken when somebody else does a pointer grab,
   // so we need to listen to all devices and do filtering of master

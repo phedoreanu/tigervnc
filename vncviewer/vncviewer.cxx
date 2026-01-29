@@ -64,7 +64,7 @@
 #include <FL/Fl_PNG_Image.H>
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/fl_ask.H>
-#include <FL/x.H>
+#include "fltk/fltk_platform.h"
 
 #include "fltk/theme.h"
 #include "fltk/util.h"
