@@ -51,6 +51,67 @@ jobs:
           name: test-results-linux
           path: build/tests/unit/test-results.xml
 
+  build-linux-fltk14:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VERBOSE: 1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext appstream
+          sudo apt-get install -y libpixman-1-dev libjpeg-turbo8-dev
+          sudo apt-get install -y libgnutls28-dev nettle-dev libgmp-dev
+          sudo apt-get install -y libxtst-dev libxdamage-dev libxfixes-dev libxrandr-dev libpam-dev
+          sudo apt-get install -y libavcodec-dev libavutil-dev libswscale-dev
+          sudo apt-get install -y uuid-dev libglib2.0-dev libpipewire-0.3-dev
+          sudo apt-get install -y libwayland-dev libxkbcommon-dev
+          sudo apt-get install -y libgtest-dev
+          sudo apt-get install -y cmake make g++ libx11-dev libxext-dev libxft-dev libxinerama-dev
+          sudo apt-get install -y libxcursor-dev libxrender-dev libxfixes-dev libpng-dev libcairo2-dev
+      - name: Build and Install FLTK 1.4
+        run: |
+          cd /tmp
+          wget https://www.fltk.org/pub/fltk/1.4.1/fltk-1.4.1-source.tar.gz
+          tar xzf fltk-1.4.1-source.tar.gz
+          cd fltk-1.4.1
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+      - name: Configure
+        run: |
+          cmake \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DENABLE_NLS=ON \
+            -DENABLE_H264=ON \
+            -DENABLE_GNUTLS=ON \
+            -DENABLE_NETTLE=ON \
+            -DBUILD_VIEWER=ON \
+            -S . -B build
+      - name: Build
+        working-directory: build
+        run: make
+      - name: Install
+        working-directory: build
+        run: make tarball
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linux (Ubuntu FLTK 1.4)
+          path: build/tigervnc-*.tar.gz
+      - name: Test
+        working-directory: build
+        run: ctest --test-dir tests/unit/ --output-junit test-results.xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-linux-fltk14
+          path: build/tests/unit/test-results.xml
+
   build-windows:
     runs-on: windows-latest
     timeout-minutes: 20
